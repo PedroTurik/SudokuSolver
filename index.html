@@ -1,0 +1,262 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sudoku Solver</title>
+    <link rel="stylesheet" href="https://classless.de/classless.css">
+    <script>
+        function getMatrix() {
+            const divs = []
+            for (let i = 1; i <= 81; i++) {
+                divs.push(document.getElementById(i))
+            }
+            const arr = []
+
+            for (let i = 0; i < 9; i++) {
+                const t = []
+                for (let j = 0; j < 9; j++) {
+                    t.push(+(divs[i * 9 + j].innerText))
+
+                }
+                arr.push(t)
+            }
+            return arr
+        }
+
+        function setMatrix(matrix) {
+            const divs = []
+            for (let i = 1; i <= 81; i++) {
+                divs.push(document.getElementById(i))
+            }
+            for (let i = 0; i < 9; i++) {
+                for (let j = 0; j < 9; j++) {
+                    divs[i * 9 + j].innerText = matrix[i][j]
+                }
+            }
+
+        }
+
+        function is_valid_cross(board, y, x, val) {
+            for (let i = 0; i < 9; i++) {
+                if (board[y][i] === val && i !== x) {
+
+                    return false
+                }
+                if (board[i][x] === val && i !== y) {
+
+                    return false
+                }
+            }
+            return true
+        }
+
+
+
+        function is_valid_square(board, y, x, val) {
+
+            let dy = y - (y % 3)
+            let dx = x - (x % 3)
+            for (let di = dy; di < dy + 3; di++) {
+                for (let dj = dx; dj < dx + 3; dj++) {
+                    if (di === y && dj === x) {
+                        continue;
+                    }
+                    if (board[di][dj] === val) {
+                        return false
+                    }
+                }
+            }
+            return true
+        }
+
+        function free_slot(board) {
+            for (let i = 0; i < 9; i++) {
+                for (let j = 0; j < 9; j++) {
+                    if (0 === board[i][j]) {
+                        return [i, j]
+                    }
+                }
+            }
+
+            return null
+        }
+
+        function recur(board) {
+            const v = free_slot(board)
+            if (v === null) {
+                return true
+            }
+            const y = v[0]
+            const x = v[1]
+
+
+            for (let n = 1; n <= 9; n++) {
+                if (is_valid_cross(board, y, x, n) && is_valid_square(board, y, x, n)) {
+                    board[y][x] = n
+                    if (recur(board)) {
+                        return true
+                    }
+
+                }
+                board[y][x] = 0
+            }
+
+            return false
+
+        }
+
+        function solve() {
+            const board = getMatrix();
+            recur(board);
+            setMatrix(board)
+        }
+
+        function clean() {
+            const divs = []
+            for (let i = 1; i <= 81; i++) {
+                divs.push(document.getElementById(i))
+            }
+            for (let i = 0; i < 81; i++) {
+                divs[i].innerText = 0
+            }
+        }
+    </script>
+    <style>
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-rows: 1fr 1fr 1fr;
+        }
+
+        .conteiner {
+            max-width: 300px;
+            max-height: 300px;
+            margin: auto;
+            margin-top: 20vh;
+        }
+
+        .outer div {
+            border:1px solid black;
+        }
+
+        .inner div {
+            border: thin black solid;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="page">
+        <div class="conteiner">
+            <div class="grid outer">
+                <div class="grid inner">
+                    <div id="1" class="slot" contenteditable="true">0</div>
+                    <div id="2" class="slot" contenteditable="true">0</div>
+                    <div id="3" class="slot" contenteditable="true">0</div>
+                    <div id="10" class="slot" contenteditable="true">0</div>
+                    <div id="11" class="slot" contenteditable="true">0</div>
+                    <div id="12" class="slot" contenteditable="true">0</div>
+                    <div id="19" class="slot" contenteditable="true">0</div>
+                    <div id="20" class="slot" contenteditable="true">0</div>
+                    <div id="21" class="slot" contenteditable="true">0</div>
+                </div>
+                <div class="grid inner">
+                    <div id="4" class="slot" contenteditable="true">0</div>
+                    <div id="5" class="slot" contenteditable="true">0</div>
+                    <div id="6" class="slot" contenteditable="true">0</div>
+                    <div id="13" class="slot" contenteditable="true">0</div>
+                    <div id="14" class="slot" contenteditable="true">0</div>
+                    <div id="15" class="slot" contenteditable="true">0</div>
+                    <div id="22" class="slot" contenteditable="true">0</div>
+                    <div id="23" class="slot" contenteditable="true">0</div>
+                    <div id="24" class="slot" contenteditable="true">0</div>
+                </div>
+                <div class="grid inner">
+                    <div id="7" class="slot" contenteditable="true">0</div>
+                    <div id="8" class="slot" contenteditable="true">0</div>
+                    <div id="9" class="slot" contenteditable="true">0</div>
+                    <div id="16" class="slot" contenteditable="true">0</div>
+                    <div id="17" class="slot" contenteditable="true">0</div>
+                    <div id="18" class="slot" contenteditable="true">0</div>
+                    <div id="25" class="slot" contenteditable="true">0</div>
+                    <div id="26" class="slot" contenteditable="true">0</div>
+                    <div id="27" class="slot" contenteditable="true">0</div>
+                </div>
+                <div class="grid inner">
+                    <div id="28" class="slot" contenteditable="true">0</div>
+                    <div id="29" class="slot" contenteditable="true">0</div>
+                    <div id="30" class="slot" contenteditable="true">0</div>
+                    <div id="37" class="slot" contenteditable="true">0</div>
+                    <div id="38" class="slot" contenteditable="true">0</div>
+                    <div id="39" class="slot" contenteditable="true">0</div>
+                    <div id="46" class="slot" contenteditable="true">0</div>
+                    <div id="47" class="slot" contenteditable="true">0</div>
+                    <div id="48" class="slot" contenteditable="true">0</div>
+                </div>
+                <div class="grid inner">
+                    <div id="31" class="slot" contenteditable="true">0</div>
+                    <div id="32" class="slot" contenteditable="true">0</div>
+                    <div id="33" class="slot" contenteditable="true">0</div>
+                    <div id="40" class="slot" contenteditable="true">0</div>
+                    <div id="41" class="slot" contenteditable="true">0</div>
+                    <div id="42" class="slot" contenteditable="true">0</div>
+                    <div id="49" class="slot" contenteditable="true">0</div>
+                    <div id="50" class="slot" contenteditable="true">0</div>
+                    <div id="51" class="slot" contenteditable="true">0</div>
+                </div>
+                <div class="grid inner">
+                    <div id="34" class="slot" contenteditable="true">0</div>
+                    <div id="35" class="slot" contenteditable="true">0</div>
+                    <div id="36" class="slot" contenteditable="true">0</div>
+                    <div id="43" class="slot" contenteditable="true">0</div>
+                    <div id="44" class="slot" contenteditable="true">0</div>
+                    <div id="45" class="slot" contenteditable="true">0</div>
+                    <div id="52" class="slot" contenteditable="true">0</div>
+                    <div id="53" class="slot" contenteditable="true">0</div>
+                    <div id="54" class="slot" contenteditable="true">0</div>
+                </div>
+                <div class="grid inner">
+                    <div id="55" class="slot" contenteditable="true">0</div>
+                    <div id="56" class="slot" contenteditable="true">0</div>
+                    <div id="57" class="slot" contenteditable="true">0</div>
+                    <div id="64" class="slot" contenteditable="true">0</div>
+                    <div id="65" class="slot" contenteditable="true">0</div>
+                    <div id="66" class="slot" contenteditable="true">0</div>
+                    <div id="73" class="slot" contenteditable="true">0</div>
+                    <div id="74" class="slot" contenteditable="true">0</div>
+                    <div id="75" class="slot" contenteditable="true">0</div>
+                </div>
+                <div class="grid inner">
+                    <div id="58" class="slot" contenteditable="true">0</div>
+                    <div id="59" class="slot" contenteditable="true">0</div>
+                    <div id="60" class="slot" contenteditable="true">0</div>
+                    <div id="67" class="slot" contenteditable="true">0</div>
+                    <div id="68" class="slot" contenteditable="true">0</div>
+                    <div id="69" class="slot" contenteditable="true">0</div>
+                    <div id="76" class="slot" contenteditable="true">0</div>
+                    <div id="77" class="slot" contenteditable="true">0</div>
+                    <div id="78" class="slot" contenteditable="true">0</div>
+                </div>
+                <div class="grid inner">
+                    <div id="61" class="slot" contenteditable="true">0</div>
+                    <div id="62" class="slot" contenteditable="true">0</div>
+                    <div id="63" class="slot" contenteditable="true">0</div>
+                    <div id="70" class="slot" contenteditable="true">0</div>
+                    <div id="71" class="slot" contenteditable="true">0</div>
+                    <div id="72" class="slot" contenteditable="true">0</div>
+                    <div id="79" class="slot" contenteditable="true">0</div>
+                    <div id="80" class="slot" contenteditable="true">0</div>
+                    <div id="81" class="slot" contenteditable="true">0</div>
+                </div>
+            </div>
+        </div>
+        <div style="margin: 20px;">
+            <button class="btn" onclick="solve()">Solve</button>
+            <button class="btn" onclick="clean()">Clean</button>
+        </div>
+    </div>
+
+</body>
+
+</html>

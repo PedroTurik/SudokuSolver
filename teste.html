@@ -1,0 +1,269 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+
+    <script>
+        function getMatrix() {
+            const divs = document.querySelectorAll("td")
+            const arr = [];
+            for (let i = 0; i < 9; i++) {
+                const c = []
+                for (let j = 0; j < 9; j++) {
+                    c.push(divs[i*9 + j].innerText ? +(divs[i*9 + j].innerText) : 0)
+                }
+                arr.push(c)
+                
+            }
+            return arr
+        }
+
+        function setMatrix(matrix) {
+            const divs = document.querySelectorAll("td")
+
+            for (let i = 0; i < 9; i++) {
+                for (let j = 0; j < 9; j++) {
+                    divs[i*9 + j].innerText = matrix[i][j]? matrix[i][j] : ""
+                }
+            }
+        }
+
+        function is_valid_cross(board, y, x, val) {
+            for (let i = 0; i < 9; i++) {
+                if (board[y][i] === val && i !== x) {
+
+                    return false
+                }
+                if (board[i][x] === val && i !== y) {
+
+                    return false
+                }
+            }
+            return true
+        }
+
+
+
+        function is_valid_square(board, y, x, val) {
+
+            let dy = y - (y % 3)
+            let dx = x - (x % 3)
+            for (let di = dy; di < dy + 3; di++) {
+                for (let dj = dx; dj < dx + 3; dj++) {
+                    if (di === y && dj === x) {
+                        continue;
+                    }
+                    if (board[di][dj] === val) {
+                        return false
+                    }
+                }
+            }
+            return true
+        }
+
+        function free_slot(board) {
+            for (let i = 0; i < 9; i++) {
+                for (let j = 0; j < 9; j++) {
+                    if (0 === board[i][j]) {
+                        return [i, j]
+                    }
+                }
+            }
+
+            return null
+        }
+
+        function recur(board) {
+            const v = free_slot(board)
+            if (v === null) {
+                return true
+            }
+            const y = v[0]
+            const x = v[1]
+
+
+            for (let n = 1; n <= 9; n++) {
+                if (is_valid_cross(board, y, x, n) && is_valid_square(board, y, x, n)) {
+                    board[y][x] = n
+                    if (recur(board)) {
+                        return true
+                    }
+
+                }
+                board[y][x] = 0
+            }
+
+            return false
+
+        }
+
+        function solve() {
+            const board = getMatrix();
+            recur(board);
+            setMatrix(board)
+        }
+
+        function clean() {
+            document.querySelectorAll("td").forEach((e) => e.innerText = "")
+        }
+
+        async function example() {
+            const matrix = getMatrix();
+            const res = await fetch("https://sudoku-api.vercel.app/api/dosuku")
+            const obj = await res.json()
+            const board = obj.newboard.grids[0].value;
+            setMatrix(board)
+        }
+    </script>
+
+    <style>
+        table {
+            border-collapse: collapse;
+            font-family: Calibri, sans-serif;
+            width: 400px;
+            height: 400px;
+            margin: auto;
+            margin-top: 100px;
+        }
+
+        colgroup,
+        tbody {
+            border: solid medium;
+        }
+
+        td {
+            border: solid thin;
+            height: 1.4em;
+            width: 1.4em;
+            text-align: center;
+            padding: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrapper">
+        <table>
+            <colgroup>
+                <col>
+                <col>
+                <col>
+                <colgroup>
+                    <col>
+                    <col>
+                    <col>
+                    <colgroup>
+                        <col>
+                        <col>
+                        <col>
+                    <tbody>
+                <tr>
+                    <td contenteditable="true">1
+                    <td contenteditable="true">
+                    <td contenteditable="true">3
+                    <td contenteditable="true">6
+                    <td contenteditable="true">
+                    <td contenteditable="true">4
+                    <td contenteditable="true">7
+                    <td contenteditable="true">
+                    <td contenteditable="true">9
+            <tr>
+                <td contenteditable="true">
+                <td contenteditable="true">2
+                <td contenteditable="true">
+                <td contenteditable="true">
+                <td contenteditable="true">9
+                <td contenteditable="true">
+                <td contenteditable="true">
+                <td contenteditable="true">1
+                <td contenteditable="true">
+            <tr>
+                <td contenteditable="true">7
+                <td contenteditable="true">
+                <td contenteditable="true">
+                <td contenteditable="true">
+                <td contenteditable="true">
+                <td contenteditable="true">
+                <td contenteditable="true">
+                <td contenteditable="true">
+                <td contenteditable="true">6
+                    <tbody>
+                        <tr>
+                            <td contenteditable="true">2
+                            <td contenteditable="true">
+                            <td contenteditable="true">4
+                            <td contenteditable="true">
+                            <td contenteditable="true">3
+                            <td contenteditable="true">
+                            <td contenteditable="true">9
+                            <td contenteditable="true">
+                            <td contenteditable="true">8
+                        <tr>
+                            <td contenteditable="true">
+                            <td contenteditable="true">
+                            <td contenteditable="true">
+                            <td contenteditable="true">
+                            <td contenteditable="true">
+                            <td contenteditable="true">
+                            <td contenteditable="true">
+                            <td contenteditable="true">
+                            <td contenteditable="true">
+                        <tr>
+                            <td contenteditable="true">5
+                            <td contenteditable="true">
+                            <td contenteditable="true">
+                            <td contenteditable="true">9
+                            <td contenteditable="true">
+                            <td contenteditable="true">7
+                            <td contenteditable="true">
+                            <td contenteditable="true">
+                            <td contenteditable="true">1
+                    <tbody>
+                        <tr>
+                            <td contenteditable="true">6
+                            <td contenteditable="true">
+                            <td contenteditable="true">
+                            <td contenteditable="true">
+                            <td contenteditable="true">5
+                            <td contenteditable="true">
+                            <td contenteditable="true">
+                            <td contenteditable="true">
+                            <td contenteditable="true">2
+                        <tr>
+                            <td contenteditable="true">
+                            <td contenteditable="true">
+                            <td contenteditable="true">
+                            <td contenteditable="true">
+                            <td contenteditable="true">7
+                            <td contenteditable="true">
+                            <td contenteditable="true">
+                            <td contenteditable="true">
+                            <td contenteditable="true">
+                        <tr>
+                            <td contenteditable="true">9
+                            <td contenteditable="true">
+                            <td contenteditable="true">
+                            <td contenteditable="true">8
+                            <td contenteditable="true">
+                            <td contenteditable="true">2
+                            <td contenteditable="true">
+                            <td contenteditable="true">
+                            <td contenteditable="true">5
+        </table>
+        <br>
+        <div style="display: flex; flex-direction: column; max-width: 300px; margin: auto; ">
+            <div style="display: flex; flex-direction: row;">
+                <button onclick="solve()" style="margin: 10px;">Solve</button>
+                <button onclick="clean()" style="margin: 10px;">Reset</button>
+            </div>
+            <button onclick="example()" style="margin: auto; max-width: fit-content; ">Example Board</button>
+        </div>
+
+    </div>
+
+</body>
+
+</html>
